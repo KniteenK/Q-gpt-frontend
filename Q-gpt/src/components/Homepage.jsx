@@ -24,11 +24,11 @@ const Homepage = () => {
         if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
             const file = event.dataTransfer.items[0].getAsFile();
             const validTypes = ['application/json', 'text/csv'];
+            
             if (validTypes.includes(file.type)) {
                 console.log('Valid file dropped -> ', file);
                 setFiles((currentFiles) => [...currentFiles, file]); 
             } else {
-            
                 alert("Invalid file type. Please drop a JSON or CSV file.");
             }
         }
@@ -51,16 +51,17 @@ const Homepage = () => {
     }, []);
 
     const handleChange = (event) => {
-        const file = event.target.files[0]; 
+        const file = event.target.files[0]; // Get the selected file
         const fileType = file.type;
         const validTypes = ['application/json', 'text/csv'];
-    
+        
         if (validTypes.includes(fileType)) {
             console.log("Valid file type:", fileType);
+            setFiles((currentFiles) => [...currentFiles, file]); // Add the selected file to the files state
         } else {
             // Invalid file type, reset the input
             alert("Invalid file type. Please select a JSON or CSV file.");
-            event.target.value = ""; 
+            event.target.value = ""; // Reset the file input
         }
     };
 
@@ -73,6 +74,7 @@ const Homepage = () => {
     // function to handle cancel
     const handleCancel = () => {
         setFiles([]); // clear the files state
+
     };
 
 
@@ -128,7 +130,7 @@ const Homepage = () => {
                 </label>
 
                 {/* display list of uploaded files */}
-
+                
                 <ul>
                     {files.map((file, index) => (
                         <li key={index}>{file.name}</li>
