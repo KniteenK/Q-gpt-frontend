@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Homepage = () => {
     let navigate = useNavigate(); // hook for navigation
@@ -8,7 +9,7 @@ const Homepage = () => {
 
     // function to go on login page
     const handleLogin = () => {
-        navigate('/login'); 
+        navigate('/Login'); 
     };
 
     // function to go on signup page
@@ -20,7 +21,7 @@ const Homepage = () => {
     const handleDrop = useCallback((event) => {
         event.preventDefault();
         setDragging(false); 
-    
+
         if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
             const file = event.dataTransfer.items[0].getAsFile();
             const validTypes = ['application/json', 'text/csv'];
@@ -66,9 +67,31 @@ const Homepage = () => {
     };
 
     // function to handle upload files
-    const handleUploadFiles = () => {
-        // logic to upload files
-        console.log('Uploading files:', files);
+    const handleUploadFiles = async () => {
+        if (files.length == 0) {
+            alert("No files selected. Please select a JSON or CSV file.");
+            return;
+        }
+
+        const data = new FormData() ;
+        files.forEach((file, index) => {
+            data.append(`file-${index}`, file);
+        });
+
+        try {
+            const response = await axios.post('/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.status === 200) {
+                console.log('File uploaded successfully:', response.data);
+                // Redirect to chat interface or handle success state
+            }
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+        
     };
 
     // function to handle cancel
