@@ -108,67 +108,7 @@ const Homepage = () => {
         }
         
     };
-    // const handleUploadFiles = async () => {
-    //     if (files.length === 0) {
-    //         alert("No files selected. Please select a JSON or CSV file.");
-    //         return;
-    //     }
     
-    //     const file = files[0]; // Assuming only one file is selected
-        
-    //     // Function to convert CSV file to JSON
-    //     const convertCSVToJSON = (file) => {
-    //         return new Promise((resolve, reject) => {
-    //             Papa.parse(file, {
-    //                 header: true, // If your CSV has headers
-    //                 complete: (result) => {
-    //                     resolve(result.data);
-    //                 },
-    //                 error: (error) => {
-    //                     reject(error);
-    //                 }
-    //             });
-    //         });
-    //     };
-    
-    //     try {
-    //         let dataToSend = new FormData();
-    
-    //         if (file.type === 'text/csv') {
-    //             // Convert CSV to JSON
-    //             const jsonData = await convertCSVToJSON(file);
-    //             // console.log(jsonData)
-    //             // Append JSON data as a string
-    //             dataToSend.append('file', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }), 'converted-file.json');
-    //         } else {
-    //             // Append original file
-    //             dataToSend.append('file', file);
-    //         }
-    //         dataToSend = await convertCSVToJSON(file);
-    //         console.log("Upload", file);
-            
-    //         const response = await fetch('http://localhost:3000/api/upload', {
-    //             method: 'POST',
-    //             body: JSON.stringify(dataToSend),
-    //             headers: {
-    //                 'Content-Type': 'application/json' 
-    //             }
-    //         });
-    
-    //         console.log(response.status);
-    
-    //         if (response.ok) {
-    //             const responseData = await response.json();
-    //             console.log('File uploaded successfully:', responseData);
-    //             // Redirect to chat interface or handle success state
-    //         } else {
-    //             throw new Error('Failed to upload file');
-    //         }
-    //     } catch (error) {
-    //         console.error('Error uploading file: brooo', error);
-    //     }
-    // };
-
     // function to handle cancel
     const handleCancel = () => {
         setFiles([]); // clear the files state
@@ -215,6 +155,10 @@ const Homepage = () => {
                 Drag and drop files here or click to upload.
                 {/* Input format for file here here style display none hides shoose file button by default */}
                 <input
+                    formAction= 'http://localhost:3000/api/upload'
+                    method = "POST"
+                    encType = "multipart/form-data"
+                    name = "files"
                     type="file"
                     onChange={handleChange}
                     style={{ display: 'none' }}
