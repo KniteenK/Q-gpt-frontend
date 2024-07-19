@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Papa from 'papaparse';
 import axios from 'axios';
 
 const Homepage = () => {
@@ -67,31 +68,94 @@ const Homepage = () => {
     };
 
     // function to handle upload files
+    // const handleUploadFiles = async () => {
+    //     if (files.length == 0) {
+    //         alert("No files selected. Please select a JSON or CSV file.");
+    //         return;
+    //     }
+
+    //     const data = new FormData() ;
+    //     files.forEach((file, index) => {
+    //         data.append(`file-${index}`, file);
+    //     });
+
+    //     try {
+    //         console.log("Upload", data);
+    //         const response = await axios.post('http://localhost:3000/api/upload', data, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         });
+    //         console.log(response.status) ;
+    //         if (response.status === 200) {
+    //             console.log('File uploaded successfully:', response.data);
+    //             // Redirect to chat interface or handle success state
+    //         }
+
+    //     } catch (error) {
+    //         console.error('Error uploading file:', error);
+    //     }
+        
+    // };
     const handleUploadFiles = async () => {
-        if (files.length == 0) {
+        if (files.length === 0) {
             alert("No files selected. Please select a JSON or CSV file.");
             return;
         }
-
-        const data = new FormData() ;
-        files.forEach((file, index) => {
-            data.append(`file-${index}`, file);
-        });
-
+    
+        const file = files[0]; // Assuming only one file is selected
+    
+        // Function to convert CSV file to JSON
+        const convertCSVToJSON = (file) => {
+            return new Promise((resolve, reject) => {
+                Papa.parse(file, {
+                    header: true, // If your CSV has headers
+                    complete: (result) => {
+                        resolve(result.data);
+                    },
+                    error: (error) => {
+                        reject(error);
+                    }
+                });
+            });
+        };
+    
         try {
-            const response = await axios.post('/api/upload', formData, {
+            let dataToSend = new FormData();
+    
+            if (file.type === 'text/csv') {
+                // Convert CSV to JSON
+                const jsonData = await convertCSVToJSON(file);
+    
+                // Append JSON data as a string
+                dataToSend.append('file', new Blob([JSON.stringify(jsonData)], { type: 'application/json' }), 'converted-file.json');
+            } else {
+                // Append original file
+                dataToSend.append('file', file);
+            }
+    
+            console.log("Upload", dataToSend);
+    
+            const response = await fetch('http://localhost:3000/api/upload', {
+                method: 'POST',
+                body: dataToSend,
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-            if (response.status === 200) {
-                console.log('File uploaded successfully:', response.data);
+    
+            console.log(response.status);
+    
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log('File uploaded successfully:', responseData);
                 // Redirect to chat interface or handle success state
+            } else {
+                throw new Error('Failed to upload file');
             }
         } catch (error) {
             console.error('Error uploading file:', error);
         }
-        
     };
 
     // function to handle cancel
@@ -120,7 +184,7 @@ const Homepage = () => {
 
             <div>
                 <div className="text-center">
-                    <h1 className="text-3xl text-black">Website Heading</h1>
+                    <h1 className="text-3xl text-black">Q-Gpt</h1>
                     <div className="flex justify-center mt-4 mx-20">
                         {/* Placeholder for additional content */}
                     </div>
