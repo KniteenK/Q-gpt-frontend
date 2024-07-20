@@ -1,7 +1,7 @@
+import axios from 'axios';
+import Papa from 'papaparse';
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Papa from 'papaparse';
-import axios from 'axios';
 
 const Homepage = () => {
     let navigate = useNavigate();
@@ -13,7 +13,7 @@ const Homepage = () => {
     };
 
     const handleSignup = () => {
-        navigate('/signup');
+        navigate('/Chatbot');
     };
 
     const handleDrop = useCallback((event) => {
