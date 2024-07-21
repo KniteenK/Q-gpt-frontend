@@ -1,8 +1,37 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+
+
+
 const Chatbot = () => {
+    
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
+
+    const options = {
+        method: 'POST',
+        url: 'https://chatgpt-42.p.rapidapi.com/conversationgpt4-2',
+        headers: {
+          'x-rapidapi-key': 'a17cd95387msha606f79b49f34eap1bb3a4jsndf11b2d013e9',
+          'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
+          'Content-Type': 'application/json'
+        },
+        data: {
+          messages: [
+            {
+              role: 'user',
+              content:'answer according to'+ localStorage.getItem('file') + 'the question is '+inputValue
+            }
+          ],
+          system_prompt: '',
+          temperature: 0.9,
+          top_k: 5,
+          top_p: 0.9,
+          max_tokens: 10000,
+          web_access: false
+        }
+      };
+    
 
     useEffect(() => {
         // Set the background of the page
@@ -16,17 +45,20 @@ const Chatbot = () => {
     const sendMessage = async (e) => {
         e.preventDefault();
         const userMessage = { type: 'user', text: inputValue };
-        setMessages([...messages, userMessage]);
-    
+        // setMessages([...messages, userMessage]);
+        
+        setMessages((prevMessages) => [...prevMessages, userMessage]);
+        
+        
         try {
-            const response = await axios.post('http://localhost:3000/api/user_message', {
-                message: inputValue
-            });
-            const aiResponse = { type: 'chatbot', text: response.data.response };
-            setMessages((prevMessages) => [...prevMessages, aiResponse]);
+            
+            const aiResponse = await axios.request(options);
+            const aiMessage = { type: 'ai', text: aiResponse.data.result };
+            setMessages((prevMessages) => [...prevMessages, aiMessage]);
+            // console.log(aiResponse.data.result);
+            
         } catch (error) {
             console.error('Error sending message:', error);
-            
         }
     
         setInputValue(''); 

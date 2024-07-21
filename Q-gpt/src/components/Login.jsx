@@ -33,7 +33,7 @@ const Login = () => {
       const response = await axios.post(url, body);
       if (response.status === 200) {
         localStorage.setItem('loggedIn' , 'true') ;
-        navigate('/Homepage' , {state : {isUser : true}}) ;
+        navigate('/Homepage' , {state : {isUser : true}});
       }
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
     } catch (error) {

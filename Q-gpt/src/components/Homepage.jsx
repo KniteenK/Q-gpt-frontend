@@ -1,13 +1,13 @@
 import axios from 'axios';
 import Papa from 'papaparse';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState,useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Homepage = () => {
     // if loggedIn is true
     const navigate = useNavigate();
     const location = useLocation();
-    const [isUser, setIsUser] = useState(isUser) ;
+    const [isUser, setIsUser] = useState() ;
     const [dragging, setDragging] = useState(false);
     const [files, setFiles] = useState([]);
 
@@ -105,12 +105,17 @@ const Homepage = () => {
             }
 
             console.log("Uploading", formData);
+            const dt = await convertCSVToJSON(files[0]);
 
             const response = await axios.post('http://localhost:3000/api/upload', formData);
 
             if (response.status === 200) {
                 console.log('File uploaded successfully:', response.data);
+                localStorage.setItem('file',JSON.stringify(dt));
+                // if(localStorage.getItem('loggedIn'))
                 navigate('./Chatbot');
+                // // else
+                // alert('login first');
                 // Redirect to chat interface or handle success state
             }
         } catch (error) {
