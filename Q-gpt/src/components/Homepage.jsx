@@ -1,13 +1,13 @@
 import axios from 'axios';
 import Papa from 'papaparse';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState , useEffect} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Homepage = () => {
     // if loggedIn is true
     const navigate = useNavigate();
     const location = useLocation();
-    const [isUser, setIsUser] = useState(isUser) ;
+    const [isUser, setIsUser] = useState(false) ;
     const [dragging, setDragging] = useState(false);
     const [files, setFiles] = useState([]);
 
@@ -25,8 +25,20 @@ const Homepage = () => {
         navigate('/Login', { state: { isSignup: true } });
     };
 
-    const handleLogout = () => {
-        navigate('/login');
+    const handleLogout = async () => {
+        // try {
+        //   await axios.post('http://localhost:3000/api/logout', {}, {
+        //     headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` },
+        //   });
+          // Remove token from localStorage
+          localStorage.removeItem('authToken');
+
+          alert('Logged out successfully');
+          setIsUser(false);
+        //   // Redirect or update UI as needed
+        // } catch (error) {
+        //   alert('An error occurred. Please try again.');
+        // }
     };
 
     const handleDrop = useCallback((event) => {
