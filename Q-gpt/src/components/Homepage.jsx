@@ -1,21 +1,13 @@
 import axios from 'axios';
 import Papa from 'papaparse';
-<<<<<<< HEAD
-import React, { useCallback, useState,useEffect } from 'react';
-=======
 import React, { useCallback, useState , useEffect} from 'react';
->>>>>>> fd96c5d7f222e3302012a4733822fee2a4e04e8f
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Homepage = () => {
     // if loggedIn is true
     const navigate = useNavigate();
     const location = useLocation();
-<<<<<<< HEAD
-    const [isUser, setIsUser] = useState() ;
-=======
     const [isUser, setIsUser] = useState(false) ;
->>>>>>> fd96c5d7f222e3302012a4733822fee2a4e04e8f
     const [dragging, setDragging] = useState(false);
     const [files, setFiles] = useState([]);
 
