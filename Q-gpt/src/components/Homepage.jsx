@@ -1,13 +1,21 @@
 import axios from 'axios';
 import Papa from 'papaparse';
+<<<<<<< HEAD
 import React, { useCallback, useState,useEffect } from 'react';
+=======
+import React, { useCallback, useState , useEffect} from 'react';
+>>>>>>> fd96c5d7f222e3302012a4733822fee2a4e04e8f
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Homepage = () => {
     // if loggedIn is true
     const navigate = useNavigate();
     const location = useLocation();
+<<<<<<< HEAD
     const [isUser, setIsUser] = useState() ;
+=======
+    const [isUser, setIsUser] = useState(false) ;
+>>>>>>> fd96c5d7f222e3302012a4733822fee2a4e04e8f
     const [dragging, setDragging] = useState(false);
     const [files, setFiles] = useState([]);
 
@@ -25,8 +33,20 @@ const Homepage = () => {
         navigate('/Login', { state: { isSignup: true } });
     };
 
-    const handleLogout = () => {
-        navigate('/login');
+    const handleLogout = async () => {
+        // try {
+        //   await axios.post('http://localhost:3000/api/logout', {}, {
+        //     headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` },
+        //   });
+          // Remove token from localStorage
+          localStorage.removeItem('authToken');
+
+          alert('Logged out successfully');
+          setIsUser(false);
+        //   // Redirect or update UI as needed
+        // } catch (error) {
+        //   alert('An error occurred. Please try again.');
+        // }
     };
 
     const handleDrop = useCallback((event) => {

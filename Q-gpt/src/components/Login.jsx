@@ -32,10 +32,17 @@ const Login = () => {
     try {
       const response = await axios.post(url, body);
       if (response.status === 200) {
+<<<<<<< HEAD
         localStorage.setItem('loggedIn' , 'true') ;
         navigate('/Homepage' , {state : {isUser : true}});
+=======
+        const { token } = response.data;
+        localStorage.setItem('authToken', token);
+  
+>>>>>>> fd96c5d7f222e3302012a4733822fee2a4e04e8f
       }
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
+      navigate('/Homepage' , {state : {isUser : true}}) ;
     } catch (error) {
       alert(error.response.data.message || 'An error occurred. Please try again.');
 
