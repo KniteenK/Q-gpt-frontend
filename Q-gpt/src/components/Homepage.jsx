@@ -1,19 +1,32 @@
 import axios from 'axios';
 import Papa from 'papaparse';
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Homepage = () => {
-    let navigate = useNavigate();
+    // if loggedIn is true
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [isUser, setIsUser] = useState(isUser) ;
     const [dragging, setDragging] = useState(false);
     const [files, setFiles] = useState([]);
 
+    useEffect(() => {
+        if (location.state && location.state.isUser) {
+            setIsUser(location.state.isUser);
+        }
+      }, [location.state]);
+
     const handleLogin = () => {
-        navigate('/Login');
+        navigate('/Login', { state: { isSignup: false } });
     };
 
     const handleSignup = () => {
-        navigate('/Chatbot');
+        navigate('/Login', { state: { isSignup: true } });
+    };
+
+    const handleLogout = () => {
+        navigate('/login');
     };
 
     const handleDrop = useCallback((event) => {
@@ -97,7 +110,7 @@ const Homepage = () => {
 
             if (response.status === 200) {
                 console.log('File uploaded successfully:', response.data);
-                navigate('./Chatbot') ;
+                navigate('./Chatbot');
                 // Redirect to chat interface or handle success state
             }
         } catch (error) {
@@ -113,16 +126,21 @@ const Homepage = () => {
         <div className="m-0 p-0 box-border">
             <div className="w-full mb-8">
                 <header className="text-blue-500 text-right">
-                    <button onClick={handleLogin} className="mr-2">Login /</button>
-                    <button onClick={handleSignup}>Signup</button>
+                    {isUser ? (
+                        <button onClick={handleLogout}>Logout</button>
+                    ) : (
+                        <>
+                            <button onClick={handleLogin} className="mr-2">Login /</button>
+                            <button onClick={handleSignup}>Signup</button>
+                        </>
+                    )}
                 </header>
             </div>
 
             <div>
                 <div className="text-center">
                     <h1 className="text-3xl text-black">Q-Gpt</h1>
-                    <div className="flex justify-center mt-4 mx-20">
-                    </div>
+                    <div className="flex justify-center mt-4 mx-20"></div>
                 </div>
             </div>
 
@@ -151,7 +169,7 @@ const Homepage = () => {
                     ))}
                 </ul>
             </div>
-        
+
             <div className="mt-6">
                 <button onClick={handleUploadFiles} className="mr-2 py-2 px-4 bg-green-500 text-white border-none rounded-md">Upload Files</button>
                 <button onClick={handleCancel} className="py-2 px-4 bg-red-500 text-white border-none rounded-md">Cancel</button>

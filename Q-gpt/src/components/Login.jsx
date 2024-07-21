@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const Login = () => {
+  const location = useLocation();
+  let navigate = useNavigate() ;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (location.state && location.state.isSignup) {
+        setIsSignUp(location.state.isSignup);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     setMounted(true);
@@ -16,14 +26,19 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = isSignUp ? 'http://localhost:3000/api/signup' : 'http://localhost:3000/api/login';
+    const url = isSignUp ? 'http://localhost:3000/auth/signup' : 'http://localhost:3000/auth/login';
     const body = { email, password };
 
     try {
       const response = await axios.post(url, body);
+      if (response.status === 200) {
+        localStorage.setItem('loggedIn' , 'true') ;
+        navigate('/Homepage' , {state : {isUser : true}}) ;
+      }
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
     } catch (error) {
       alert(error.response.data.message || 'An error occurred. Please try again.');
+
     }
   };
 
