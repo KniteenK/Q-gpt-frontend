@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import { auth, googleProvider } from './firebase';
-// import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import axios from 'axios';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,35 +15,25 @@ const Login = () => {
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
   const handleSubmit = async (e) => {
-    e.preventDefault() ;
-    if (isSignUp) {
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        alert('User created successfully');
-      } catch (error) {
-        alert(error.message);
-      }
-    } else {
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        alert('Logged in successfully');
-      } catch (error) {
-        alert(error.message);
-      }
+    e.preventDefault();
+    const url = isSignUp ? 'http://localhost:3000/api/signup' : 'http://localhost:3000/api/login';
+    const body = { email, password };
+
+    try {
+      const response = await axios.post(url, body);
+      alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
+    } catch (error) {
+      alert(error.response.data.message || 'An error occurred. Please try again.');
     }
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      alert('Logged in with Google');
-    } catch (error) {
-      alert(error.message);
-    }
+    // Implement Google Sign-In here or redirect to sign-up form
+    setIsSignUp(true);
   };
 
   if (!mounted) {
-    return null ;
+    return null;
   }
 
   return (
@@ -92,7 +81,7 @@ const Login = () => {
             onClick={handleGoogleSignIn}
             className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
-            Login with Google
+            {isSignUp ? 'Sign Up with Google' : 'Login with Google'}
           </button>
         </div>
         <div className="text-center">
