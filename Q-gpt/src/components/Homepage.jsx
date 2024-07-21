@@ -97,6 +97,7 @@ const Homepage = () => {
 
             if (response.status === 200) {
                 console.log('File uploaded successfully:', response.data);
+                navigate('./Chatbot') ;
                 // Redirect to chat interface or handle success state
             }
         } catch (error) {

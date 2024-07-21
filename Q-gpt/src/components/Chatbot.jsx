@@ -19,7 +19,7 @@ const Chatbot = () => {
         setMessages([...messages, userMessage]);
     
         try {
-            const response = await axios.post('/api/user_message', {
+            const response = await axios.post('http://localhost:3000/api/user_message', {
                 message: inputValue
             });
             const aiResponse = { type: 'chatbot', text: response.data.response };
