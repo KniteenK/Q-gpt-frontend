@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-
-
-
+import { Link } from 'react-router-dom';
+import copyIcon from '../assets/copyIcon.png'; // Import your custom icon
+import HomeIcon from '../assets/images.png';
 const Chatbot = () => {
     
     const [messages, setMessages] = useState([]);
@@ -64,13 +64,28 @@ const Chatbot = () => {
     
         setInputValue(''); 
     };
+    const copyMessageToClipboard = async (messageText) => {
+        try {
+            await navigator.clipboard.writeText(messageText);
+            alert('Message copied!');
+        } catch (err) {
+            console.error('Could not copy text: ', err);
+        }
+    };
 
     return (
         <div className="fixed bottom-10 mx-4 w-9/12 border max-w-none p-2.5 bg-[#2e2e31] rounded-lg shadow-md">
+            <div className="absolute top-0 right-0 p-4">
+                <Link to="/">
+                    <img src={HomeIcon} alt="Home" className="w-10 h-10" />
+                </Link>
+            </div>
+            
             <div className="overflow-auto p-2 h-[650px] mb-4"> 
                 {messages.map((message, index) => (
-                    <div key={index} className={`text-white  p-2 rounded-[40px] mx-[500px] my-[20px] ${message.type === 'user' ? 'bg-[#3c3c40] text-left ml-auto' : ' text-right mr-auto'} break-words max-w-full`}>
-                        {message.text}
+                    <div key={index} className={`text-white p-2 rounded-[40px] mx-[500px] my-[20px] ${message.type === 'user' ? 'bg-[#3c3c40] text-left ml-auto' : ' text-right mr-auto'} break-words max-w-full`}>
+                        <span>{message.text}</span>
+                        <img src={copyIcon} alt="Copy" className="ml-2 cursor-pointer mt-2 w-5 h-5" onClick={() => copyMessageToClipboard(message.text)} title="Copy message" />
                     </div>
                 ))}
             </div>

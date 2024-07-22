@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Papa from 'papaparse';
-import React, { useCallback, useState , useEffect} from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Homepage = () => {
     // if loggedIn is true
@@ -89,6 +89,9 @@ const Homepage = () => {
             alert("No files selected. Please select a JSON or CSV file.");
             return;
         }
+        if (!isUser){
+            alert('Login first');
+        }
 
         const convertCSVToJSON = (file) => {
             return new Promise((resolve, reject) => {
@@ -134,6 +137,7 @@ const Homepage = () => {
             console.error('Error uploading file:', error);
         }
     };
+    
 
     const handleCancel = () => {
         setFiles([]);
@@ -189,6 +193,7 @@ const Homepage = () => {
 
             <div className="mt-6">
                 <button onClick={handleUploadFiles} className="mr-2 py-2 px-4 bg-green-500 text-white border-none rounded-md">Upload Files</button>
+                
                 <button onClick={handleCancel} className="py-2 px-4 bg-red-500 text-white border-none rounded-md">Cancel</button>
             </div>
         </div>

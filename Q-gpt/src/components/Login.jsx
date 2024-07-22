@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const location = useLocation();
-  let navigate = useNavigate() ;
+  let navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // State for confirm password
   const [isSignUp, setIsSignUp] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     if (location.state && location.state.isSignup) {
-        setIsSignUp(location.state.isSignup);
+      setIsSignUp(location.state.isSignup);
     }
   }, [location.state]);
 
@@ -23,26 +23,30 @@ const Login = () => {
 
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value); // Handler for confirm password
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // condition that check pass = confirm pass
+    if (isSignUp && password !== confirmPassword) {
+      alert('Password and confirmed password are not same.');
+      return; 
+    }
     const url = isSignUp ? 'http://localhost:3000/auth/signup' : 'http://localhost:3000/auth/login';
     const body = { email, password };
 
     try {
       const response = await axios.post(url, body);
       if (response.status === 200) {
-        localStorage.setItem('loggedIn' , 'true') ;
-        navigate('/Homepage' , {state : {isUser : true}});
+        localStorage.setItem('loggedIn', 'true');
+        navigate('/Homepage', { state: { isUser: true } });
         const { token } = response.data;
         localStorage.setItem('authToken', token);
-  
       }
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
-      navigate('/Homepage' , {state : {isUser : true}}) ;
+      navigate('/Homepage', { state: { isUser: true } });
     } catch (error) {
       alert(error.response.data.message || 'An error occurred. Please try again.');
-
     }
   };
 
@@ -86,6 +90,20 @@ const Login = () => {
               className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             />
           </div>
+          {isSignUp && (
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required={isSignUp}
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          )}
           <div>
             <button
               type="submit"
