@@ -11,7 +11,7 @@ const Chatbot = () => {
     const options = {
         method: 'POST',
         // url: 'https://chatgpt-42.p.rapidapi.com/conversationgpt4-2',
-        url:'http://localhost:3000/api/ask',
+        url:'http://localhost:3000/ask',
         headers: {
           'x-rapidapi-key': 'a17cd95387msha606f79b49f34eap1bb3a4jsndf11b2d013e9',
           'x-rapidapi-host': 'chatgpt-42.p.rapidapi.com',
@@ -54,8 +54,8 @@ const Chatbot = () => {
         try {
             
             const aiResponse = await axios.request(options);
-            console.log(aiResponse.data);
-            setMessages((prevMessages) => [...prevMessages, {type:'ai',text:aiResponse.data}]);
+            console.log(aiResponse.data.result);
+            setMessages((prevMessages) => [...prevMessages, {type:'ai',text:aiResponse.data.result}]);
             console.log(messages);
             
         } catch (error) {
