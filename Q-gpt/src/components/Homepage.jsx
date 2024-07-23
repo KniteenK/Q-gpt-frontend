@@ -91,6 +91,7 @@ const Homepage = () => {
         }
         if (!isUser){
             alert('Login first');
+            return ;
         }
 
         const convertCSVToJSON = (file) => {
@@ -128,7 +129,7 @@ const Homepage = () => {
                 console.log('File uploaded successfully:', response.data);
                 localStorage.setItem('file',JSON.stringify(dt));
                 // if(localStorage.getItem('loggedIn'))
-                navigate('./Chatbot');
+                navigate('/Chatbot');
                 // // else
                 // alert('login first');
                 // Redirect to chat interface or handle success state

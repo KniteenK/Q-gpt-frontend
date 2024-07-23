@@ -13,7 +13,7 @@ const Login = () => {
 
   useEffect(() => {
     if (location.state && location.state.isSignup) {
-      setIsSignUp(location.state.isSignup);
+      setIsSignUp(location.state.isSignup) ;
     }
   }, [location.state]);
 
