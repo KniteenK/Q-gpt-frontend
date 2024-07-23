@@ -129,7 +129,7 @@ const Homepage = () => {
                 console.log('File uploaded successfully:', response.data);
                 localStorage.setItem('file',JSON.stringify(dt));
                 // if(localStorage.getItem('loggedIn'))
-                navigate('/Chatbot');
+                navigate('/Chatbot' , {state : {isUser : true}});
                 // // else
                 // alert('login first');
                 // Redirect to chat interface or handle success state
