@@ -2,20 +2,22 @@ import axios from 'axios';
 import Papa from 'papaparse';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { FaSun, FaMoon } from 'react-icons/fa';
 
 const Homepage = () => {
-    // if loggedIn is true
     const navigate = useNavigate();
     const location = useLocation();
-    const [isUser, setIsUser] = useState(false) ;
+    const [isUser, setIsUser] = useState(false);
     const [dragging, setDragging] = useState(false);
     const [files, setFiles] = useState([]);
+    const [uploading, setUploading] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
         if (location.state && location.state.isUser) {
             setIsUser(location.state.isUser);
         }
-      }, [location.state]);
+    }, [location.state]);
 
     const handleLogin = () => {
         navigate('/Login', { state: { isSignup: false } });
@@ -25,20 +27,10 @@ const Homepage = () => {
         navigate('/Login', { state: { isSignup: true } });
     };
 
-    const handleLogout = async () => {
-        // try {
-        //   await axios.post('http://localhost:3000/api/logout', {}, {
-        //     headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` },
-        //   });
-          // Remove token from localStorage
-          localStorage.removeItem('authToken');
-
-          alert('Logged out successfully');
-          setIsUser(false);
-        //   // Redirect or update UI as needed
-        // } catch (error) {
-        //   alert('An error occurred. Please try again.');
-        // }
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        alert('Logged out successfully');
+        setIsUser(false);
     };
 
     const handleDrop = useCallback((event) => {
@@ -50,7 +42,6 @@ const Homepage = () => {
             const validTypes = ['application/json', 'text/csv'];
 
             if (validTypes.includes(file.type)) {
-                console.log('Valid file dropped -> ', file);
                 setFiles((currentFiles) => [...currentFiles, file]);
             } else {
                 alert("Invalid file type. Please drop a JSON or CSV file.");
@@ -72,11 +63,9 @@ const Homepage = () => {
 
     const handleChange = (event) => {
         const file = event.target.files[0];
-        const fileType = file.type;
         const validTypes = ['application/json', 'text/csv'];
 
-        if (validTypes.includes(fileType)) {
-            console.log("Valid file type:", fileType);
+        if (validTypes.includes(file.type)) {
             setFiles((currentFiles) => [...currentFiles, file]);
         } else {
             alert("Invalid file type. Please select a JSON or CSV file.");
@@ -89,10 +78,12 @@ const Homepage = () => {
             alert("No files selected. Please select a JSON or CSV file.");
             return;
         }
-        if (!isUser){
-            alert('Login first');
-            return ;
+        if (!isUser) {
+            alert('Please log in first.');
+            return;
         }
+
+        setUploading(true);
 
         const convertCSVToJSON = (file) => {
             return new Promise((resolve, reject) => {
@@ -120,83 +111,84 @@ const Homepage = () => {
                 formData.append('file', files[0]);
             }
 
-            console.log("Uploading", formData);
-            const dt = await convertCSVToJSON(files[0]);
-
             const response = await axios.post('http://localhost:3000/api/upload', formData);
 
             if (response.status === 200) {
                 console.log('File uploaded successfully:', response.data);
-                localStorage.setItem('file',JSON.stringify(dt));
-                // if(localStorage.getItem('loggedIn'))
-                navigate('/Chatbot');
-                // // else
-                // alert('login first');
-                // Redirect to chat interface or handle success state
+                localStorage.setItem('file', JSON.stringify(jsonData));
+                navigate('/Chatbot', { state: { isUser: true } });
             }
         } catch (error) {
             console.error('Error uploading file:', error);
+        } finally {
+            setUploading(false);
         }
     };
-    
 
     const handleCancel = () => {
         setFiles([]);
     };
 
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
     return (
-        <div className="m-0 p-0 box-border">
-            <div className="w-full mb-8">
-                <header className="text-blue-500 text-right">
+        <div className={`flex flex-col items-center p-4 min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
+            <header className="w-full flex justify-between items-center p-4 bg-opacity-80 backdrop-blur-sm">
+                <h1 className="text-2xl font-bold">Q-Gpt</h1>
+                <div className="flex items-center space-x-4">
                     {isUser ? (
-                        <button onClick={handleLogout}>Logout</button>
+                        <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">Logout</button>
                     ) : (
                         <>
-                            <button onClick={handleLogin} className="mr-2">Login /</button>
-                            <button onClick={handleSignup}>Signup</button>
+                            <button onClick={handleLogin} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Login</button>
+                            <button onClick={handleSignup} className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">Signup</button>
                         </>
                     )}
-                </header>
-            </div>
-
-            <div>
-                <div className="text-center">
-                    <h1 className="text-3xl text-black">Q-Gpt</h1>
-                    <div className="flex justify-center mt-4 mx-20"></div>
+                    <button onClick={toggleDarkMode} className="text-2xl focus:outline-none">
+                        {darkMode ? <FaSun /> : <FaMoon />}
+                    </button>
                 </div>
-            </div>
+            </header>
 
-            <div
-                className={`border-2 border-dashed p-10 ${dragging ? 'border-blue-500' : 'border-gray-300'}`}
-                onDrop={handleDrop}
-                onDragOver={handleDrag}
-                onDragEnter={handleDragState(true)}
-                onDragLeave={handleDragState(false)}
-            >
-                Drag and drop files here or click to upload.
-                <input
-                    name="files"
-                    type="file"
-                    onChange={handleChange}
-                    style={{ display: 'none' }}
-                    id="fileInput"
-                    accept=".json,.csv,application/json,text/csv"
-                />
-                <label htmlFor="fileInput" className="cursor-pointer">
-                    <div className="mt-2 text-blue-500">Browse files</div>
-                </label>
-                <ul>
-                    {files.map((file, index) => (
-                        <li key={index}>{file.name}</li>
-                    ))}
-                </ul>
-            </div>
+            <main className="flex flex-col items-center justify-center flex-1 w-full">
+                <div
+                    className={`border-4 border-dashed p-8 rounded-lg w-full max-w-screen-lg flex flex-col items-center justify-center text-center transition-colors ${dragging ? 'border-blue-500 bg-blue-100' : 'border-gray-400 bg-white'} ${darkMode ? 'border-gray-700 bg-gray-800' : ''}`}
+                    onDrop={handleDrop}
+                    onDragOver={handleDrag}
+                    onDragEnter={handleDragState(true)}
+                    onDragLeave={handleDragState(false)}
+                >
+                    <input
+                        id="fileInput"
+                        name="files"
+                        type="file"
+                        onChange={handleChange}
+                        style={{ display: 'none' }}
+                        accept=".json,.csv,application/json,text/csv"
+                    />
+                    <label htmlFor="fileInput" className="cursor-pointer text-blue-500 hover:text-blue-700">
+                        Drag and drop files here or click to upload.
+                    </label>
+                    <ul className="mt-4">
+                        {files.map((file, index) => (
+                            <li key={index} className="text-gray-600">{file.name}</li>
+                        ))}
+                    </ul>
+                </div>
 
-            <div className="mt-6">
-                <button onClick={handleUploadFiles} className="mr-2 py-2 px-4 bg-green-500 text-white border-none rounded-md">Upload Files</button>
-                
-                <button onClick={handleCancel} className="py-2 px-4 bg-red-500 text-white border-none rounded-md">Cancel</button>
-            </div>
+                <div className="mt-6 flex flex-col md:flex-row">
+                    <button
+                        onClick={handleUploadFiles}
+                        className={`mr-0 md:mr-4 mb-4 md:mb-0 py-2 px-6 bg-green-500 text-white rounded-md hover:bg-green-700 transition-colors ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={uploading}
+                    >
+                        {uploading ? 'Uploading...' : 'Upload Files'}
+                    </button>
+                    <button onClick={handleCancel} className="py-2 px-6 bg-red-500 text-white rounded-md hover:bg-red-700 transition-colors">Cancel</button>
+                </div>
+            </main>
         </div>
     );
 };
