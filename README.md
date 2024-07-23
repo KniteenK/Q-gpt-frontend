@@ -10,7 +10,7 @@ This project aims to solve the cumbersome and time-consuming process of data ret
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
+- [Help](#Help)
 
 ## Overview
 
