@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Papa from 'papaparse';
 import React, { useCallback, useEffect, useState } from 'react';
+import { FaMoon, FaSun } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FaSun, FaMoon } from 'react-icons/fa';
 
 const Homepage = () => {
     const navigate = useNavigate();
@@ -115,7 +115,7 @@ const Homepage = () => {
 
             if (response.status === 200) {
                 console.log('File uploaded successfully:', response.data);
-                localStorage.setItem('file', JSON.stringify(jsonData));
+                // localStorage.setItem('file', JSON.stringify(jsonData));
                 navigate('/Chatbot', { state: { isUser: true } });
             }
         } catch (error) {
