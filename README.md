@@ -28,7 +28,7 @@ The frontend of Q-gpt is a React-based application that interacts with the backe
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/q-gpt-frontend.git
+   git clone https://github.com/KniteenK/Q-gpt-frontend.git
    cd q-gpt-frontend
 2. Install dependencies:
    ```bash
