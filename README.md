@@ -9,9 +9,6 @@ This project aims to solve the cumbersome and time-consuming process of data ret
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [API Integration](#api-integration)
-- [Authentication](#authentication)
-- [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [License](#license)
 
