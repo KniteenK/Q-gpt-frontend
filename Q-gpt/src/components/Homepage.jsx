@@ -115,7 +115,7 @@ const Homepage = () => {
 
             if (response.status === 200) {
                 console.log('File uploaded successfully:', response.data);
-                // localStorage.setItem('file', JSON.stringify(jsonData));
+                localStorage.setItem('file', JSON.stringify(jsonData));
                 navigate('/Chatbot', { state: { isUser: true } });
             }
         } catch (error) {
