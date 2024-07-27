@@ -1,8 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { GoogleAuthProvider , signInWithPopup } from 'firebase/auth' ;
+
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from './firebaseConfig.jsx';
+
+
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const location = useLocation();
@@ -31,7 +36,7 @@ const Login = () => {
     e.preventDefault();
     // condition that check pass = confirm pass
     if (isSignUp && password !== confirmPassword) {
-      alert('Password and confirmed password are not same.');
+      toast.error('Password and confirmed password are not same.');
       return; 
     }
     const url = isSignUp ? 'http://localhost:3000/auth/signup' : 'http://localhost:3000/auth/login';
@@ -48,7 +53,11 @@ const Login = () => {
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
       navigate('/Homepage', { state: { isUser: true } });
     } catch (error) {
+
       alert('An error occurred. Please try again.');
+
+      toast.error(error.response.data.message || 'An error occurred. Please try again.');
+
     }
   };
 
@@ -150,6 +159,7 @@ const Login = () => {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };
