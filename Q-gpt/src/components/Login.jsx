@@ -1,14 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-<<<<<<< Updated upstream
-import { GoogleAuthProvider , signInWithPopup } from 'firebase/auth' ;
+
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from './firebaseConfig.jsx';
 
-=======
+
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
->>>>>>> Stashed changes
+
 const Login = () => {
   const location = useLocation();
   let navigate = useNavigate();
@@ -53,11 +53,11 @@ const Login = () => {
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
       navigate('/Homepage', { state: { isUser: true } });
     } catch (error) {
-<<<<<<< Updated upstream
+
       alert('An error occurred. Please try again.');
-=======
+
       toast.error(error.response.data.message || 'An error occurred. Please try again.');
->>>>>>> Stashed changes
+
     }
   };
 
