@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { GoogleAuthProvider , signInWithPopup } from 'firebase/auth' ;
+import { auth } from './firebaseConfig.jsx';
 
 const Login = () => {
   const location = useLocation();
@@ -46,18 +48,36 @@ const Login = () => {
       alert(isSignUp ? 'User created successfully' : 'Logged in successfully');
       navigate('/Homepage', { state: { isUser: true } });
     } catch (error) {
-      alert(error.response.data.message || 'An error occurred. Please try again.');
+      alert('An error occurred. Please try again.');
     }
   };
 
   const handleGoogleSignIn = async () => {
-    // Implement Google Sign-In here or redirect to sign-up form
-    setIsSignUp(true);
-  };
+    const url = 'http://localhost:3000/auth/google';
+    const provider = new GoogleAuthProvider();
 
+    try {
+      const result = await signInWithPopup(auth , provider) ;
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const token = credential.accessToken ;
+      const user = result.user.email ;
+      localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem('authToken', token);
+      navigate('/Homepage', { state: { isUser: true } });
+      
+
+    } catch(error) {
+      alert('An error occurred. Please try again.');
+      console.log(error) ;
+    }
+
+    
+  };
+  
   if (!mounted) {
     return null;
   }
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
