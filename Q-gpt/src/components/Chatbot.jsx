@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MdDarkMode, MdHome, MdLightMode } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import copyIcon from '../assets/copyIcon.png';
-
 const Chatbot = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -65,7 +66,7 @@ const Chatbot = () => {
   const copyMessageToClipboard = async (messageText) => {
     try {
       await navigator.clipboard.writeText(messageText);
-      alert('Message copied!');
+      toast.info('Message copied!');
     } catch (err) {
       console.error('Could not copy text: ', err);
     }
@@ -100,6 +101,7 @@ const Chatbot = () => {
           disabled={loading}
         />
       </form>
+      <ToastContainer />
     </div>
   );
 }

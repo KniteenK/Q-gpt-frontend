@@ -3,7 +3,8 @@ import Papa from 'papaparse';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Homepage = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -29,7 +30,8 @@ const Homepage = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
-        alert('Logged out successfully');
+        toast.success('Logged out successfully');
+        
         setIsUser(false);
     };
 
@@ -44,7 +46,7 @@ const Homepage = () => {
             if (validTypes.includes(file.type)) {
                 setFiles((currentFiles) => [...currentFiles, file]);
             } else {
-                alert("Invalid file type. Please drop a JSON or CSV file.");
+                toast.warn("Invalid file type. Please drop a JSON or CSV file.");
             }
         }
     }, []);
@@ -68,18 +70,18 @@ const Homepage = () => {
         if (validTypes.includes(file.type)) {
             setFiles((currentFiles) => [...currentFiles, file]);
         } else {
-            alert("Invalid file type. Please select a JSON or CSV file.");
+            toast.warn("Invalid file type. Please select a JSON or CSV file.");
             event.target.value = "";
         }
     };
 
     const handleUploadFiles = async () => {
         if (files.length === 0) {
-            alert("No files selected. Please select a JSON or CSV file.");
+            toast.info("No files selected. Please select a JSON or CSV file.");
             return;
         }
         if (!isUser) {
-            alert('Please log in first.');
+            toast.info('Please log in first.');
             return;
         }
 
@@ -140,6 +142,7 @@ const Homepage = () => {
                 <div className="flex items-center space-x-4">
                     {isUser ? (
                         <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">Logout</button>
+                   
                     ) : (
                         <>
                             <button onClick={handleLogin} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Login</button>
@@ -189,6 +192,8 @@ const Homepage = () => {
                     <button onClick={handleCancel} className="py-2 px-6 bg-red-500 text-white rounded-md hover:bg-red-700 transition-colors">Cancel</button>
                 </div>
             </main>
+            <ToastContainer />
+            
         </div>
     );
 };
