@@ -15,8 +15,13 @@ const Homepage = () => {
     const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
+        // check if the user is logged in or not by checking from local storage
+        const userLoggedIn = localStorage.getItem('isUser') === 'true';
+        setIsUser(userLoggedIn);
         if (location.state && location.state.isUser) {
+            // set user logged in on refresh if user is already logged in
             setIsUser(location.state.isUser);
+            localStorage.setItem('isUser', location.state.isUser);
         }
     }, [location.state]);
 
@@ -30,8 +35,8 @@ const Homepage = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('isUser');
         toast.success('Logged out successfully');
-        
         setIsUser(false);
     };
 
