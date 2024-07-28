@@ -104,9 +104,10 @@ const Homepage = () => {
         try {
             let formData = new FormData();
             let isCSV = files[0].type === 'text/csv';
-
+            let jsonData = files[0] ;
+            
             if (isCSV) {
-                let jsonData = await convertCSVToJSON(files[0]);
+                jsonData = await convertCSVToJSON(files[0]);
                 let jsonBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
                 formData.append('file', jsonBlob, files[0].name.replace('.csv', '.json'));
             } else {
