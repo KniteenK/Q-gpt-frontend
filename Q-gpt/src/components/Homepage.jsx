@@ -5,6 +5,9 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaCog, FaTable, FaList, FaFolder, FaSearch, FaLock } from 'react-icons/fa';
+import FeaturesSection from './FeaturesSection';
+
 const Homepage = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -109,6 +112,7 @@ const Homepage = () => {
         try {
             let formData = new FormData();
             let isCSV = files[0].type === 'text/csv';
+
             let jsonData = files[0] ;
             
             if (isCSV) {
@@ -144,11 +148,10 @@ const Homepage = () => {
     return (
         <div className={`flex flex-col items-center p-4 min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-black'}`}>
             <header className="w-full flex justify-between items-center p-4 bg-opacity-80 backdrop-blur-sm">
-                <h1 className="text-2xl font-bold">Q-Gpt</h1>
+                <h1 className="text-2xl font-bold">Q-Gpt.</h1>
                 <div className="flex items-center space-x-4">
                     {isUser ? (
                         <button onClick={handleLogout} className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">Logout</button>
-                   
                     ) : (
                         <>
                             <button onClick={handleLogin} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Login</button>
@@ -197,9 +200,9 @@ const Homepage = () => {
                     </button>
                     <button onClick={handleCancel} className="py-2 px-6 bg-red-500 text-white rounded-md hover:bg-red-700 transition-colors">Cancel</button>
                 </div>
+            <FeaturesSection />
             </main>
             <ToastContainer />
-            
         </div>
     );
 };
