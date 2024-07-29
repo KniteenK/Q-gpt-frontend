@@ -18,8 +18,13 @@ const Homepage = () => {
     const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
+        // check if the user is logged in or not by checking from local storage
+        const userLoggedIn = localStorage.getItem('isUser') === 'true';
+        setIsUser(userLoggedIn);
         if (location.state && location.state.isUser) {
+            // set user logged in on refresh if user is already logged in
             setIsUser(location.state.isUser);
+            localStorage.setItem('isUser', location.state.isUser);
         }
     }, [location.state]);
 
@@ -33,6 +38,7 @@ const Homepage = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('isUser');
         toast.success('Logged out successfully');
         setIsUser(false);
     };
@@ -106,11 +112,12 @@ const Homepage = () => {
         try {
             let formData = new FormData();
             let isCSV = files[0].type === 'text/csv';
-            let jsonData = files[0];
 
+            let jsonData = files[0] ;
+            
             if (isCSV) {
                 jsonData = await convertCSVToJSON(files[0]);
-                const jsonBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+                let jsonBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
                 formData.append('file', jsonBlob, files[0].name.replace('.csv', '.json'));
             } else {
                 formData.append('file', files[0]);
